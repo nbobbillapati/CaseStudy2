@@ -1,0 +1,32 @@
+---
+title: "Data Science Case Study 2"
+author: "Lakshmi Bobbillapati, Stanford Finney, Laura Ludwig, Ryan Talk"
+date: "November 25, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(stringr)
+```
+
+## Introduction
+
+This is where we will write an introduction to the problem and analysis we are completing.
+
+## Data cleaning
+
+In this section, we will need to present code that we use to gather and merge the two data sets (so Professor Woo can see it). We also need to include several text sentences before or after the code chunk to explain what is being done. 
+
+
+```{r vet}
+## CODE
+
+```
+
+## Conclusion
+Here we will need to tie together the results from our analysis.
+
+
