@@ -8,18 +8,39 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
-library(dplyr)
-library(stringr)
+library(xlsx)
+library(mlbench)
+library(caret)
 ```
 
 ## Introduction
 
 This is where we will write an introduction to the problem and analysis we are completing.
 
-## Data cleaning
+## Data Exploration
 
-In this section, we will need to present code that we use to gather and merge the two data sets (so Professor Woo can see it). We also need to include several text sentences before or after the code chunk to explain what is being done. 
+```{r gather}
+dat <- read.xlsx("CaseStudy2-data.xlsx", sheetName="HR-employee-attrition Data")
+head(dat)
+summary(dat)
+```
 
+From this summary, there are 35 variables, and 1470 observations. The variable of interest is "Attrition", which is a binary "Yes/No" outcome. A number of the variables are redundant or non-informative: "Over18" and "EmployeeCount" have only one value each; "EmployeeNumber" is an ID. 
+
+```{r clean}
+dat <- subset(dat, select = -c(Over18,EmployeeCount)) #Remove the columns that do not give any useful information.
+dat$Att <- ifelse(dat$Attrition == "Yes", 1,0) #Create a numeric representation of Attrition (1=Yes, 0=No)
+
+# Create variable for age group
+attach(dat)
+dat$AgeGroup[Age <= 24] <- "18-24"
+dat$AgeGroup[Age > 24 & Age <=34] <- "25-34"
+dat$AgeGroup[Age > 34 & Age <=44] <- "35-44"
+dat$AgeGroup[Age > 44 & Age <=54] <- "45-54"
+dat$AgeGroup[Age > 54 & Age <=64] <- "55-64"
+dat$AgeGroup[Age >= 65] <- "65+"
+detach(dat)
+```
 
 ```{r vet}
 ## CODE
