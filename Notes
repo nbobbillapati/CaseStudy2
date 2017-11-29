@@ -1,0 +1,20 @@
+
+Variables that should possibly be treated as a factor/class variable (even though the dataset shows as numeric):
+EnvironmentSatisfaction
+JobInvolvement
+JobLevel
+JobSatisfaction
+PerformanceRating
+RelationshipSatisfaction
+StockOptionLevel
+WorkLifeBalance
+NumCompaniesWorked?
+
+
+Boxplot observations:
+HourlyRate didn't look like it gives much difference.
+MonthlyRate didn't look like it gives much difference.
+PercentSalaryHike didn't look like it gives much difference.
+YearsSinceLastPromotion didn't look like it gives much difference.
+
+

@@ -11,6 +11,8 @@ library(ggplot2)
 library(xlsx)
 library(mlbench)
 library(caret)
+library(vcd)
+library(ICC)
 ```
 
 ## Introduction
@@ -25,25 +27,38 @@ head(dat)
 summary(dat)
 ```
 
-From this summary, there are 35 variables, and 1470 observations. The variable of interest is "Attrition", which is a binary "Yes/No" outcome. A number of the variables are redundant or non-informative: "Over18" and "EmployeeCount" have only one value each; "EmployeeNumber" is an ID. 
+From this summary, there are 35 variables, and 1470 observations. The variable of interest is "Attrition", which is a binary "Yes/No" outcome. A number of the variables are redundant or non-informative: "Over18", "StandardHours" and "EmployeeCount" have only one value each; "EmployeeNumber" is an ID. 
 
 ```{r clean}
-dat <- subset(dat, select = -c(Over18,EmployeeCount)) #Remove the columns that do not give any useful information.
+dat <- subset(dat, select = -c(Over18,EmployeeCount,StandardHours)) #Remove the columns that do not give any useful information.
 dat$Att <- ifelse(dat$Attrition == "Yes", 1,0) #Create a numeric representation of Attrition (1=Yes, 0=No)
 
 # Create variable for age group
-attach(dat)
-dat$AgeGroup[Age <= 24] <- "18-24"
-dat$AgeGroup[Age > 24 & Age <=34] <- "25-34"
-dat$AgeGroup[Age > 34 & Age <=44] <- "35-44"
-dat$AgeGroup[Age > 44 & Age <=54] <- "45-54"
-dat$AgeGroup[Age > 54 & Age <=64] <- "55-64"
-dat$AgeGroup[Age >= 65] <- "65+"
-detach(dat)
+#attach(dat)
+#dat$AgeGroup[Age <= 24] <- "18-24"
+#dat$AgeGroup[Age > 24 & Age <=34] <- "25-34"
+#dat$AgeGroup[Age > 34 & Age <=44] <- "35-44"
+#dat$AgeGroup[Age > 44 & Age <=54] <- "45-54"
+#dat$AgeGroup[Age > 54 & Age <=64] <- "55-64"
+#dat$AgeGroup[Age >= 65] <- "65+"
+#detach(dat)
 ```
 
-```{r vet}
-## CODE
+To start exploring the data, look at boxplots/histograms based on Attrition. 
+```{r boxplots}
+# Maybe include some relevant box plots
+```
+
+```{r correlations}
+
+#Create a function to look at Kramer correlations between categorical variables
+catcorrm <- function(vars, dat) sapply(vars, function(y) sapply(vars, function(x) assocstats(table(dat[,x], dat[,y]))$cramer))
+
+#Create a vector of the names of the categorical variables from the data set
+catvars <- c("Attrition","BusinessTravel","Department","EducationField","Gender","JobRole","MaritalStatus","OverTime","EnvironmentSatisfaction","JobInvolvement","JobLevel","JobSatisfaction","PerformanceRating","RelationshipSatisfaction","StockOptionLevel","WorkLifeBalance","NumCompaniesWorked")
+
+#Run the Kramer correlation function
+mat <- catcorrm(vars=catvars,dat)
 
 ```
 
