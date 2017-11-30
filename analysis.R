@@ -1,10 +1,24 @@
 #Reading in data and review high level summary
-dat <- read.xlsx("CaseStudy2-data.xlsx", sheetName="HR-employee-attrition Data")
+dat <- read.xlsx("CaseStudy2-data.xlsx", sheetName="HR-employee-attrition Data",na.strings=c(""))
 head(dat)
 summary(dat)
+sapply(dat,function(x) sum(is.na(x))) #check if there are any missing values
 
 #Remove the columns that do not give any useful information.
-dat <- subset(dat, select = -c(Over18,EmployeeCount,StandardHours)) 
+dat <- subset(dat, select = -c(Over18,EmployeeCount,StandardHours,na.strings)) 
+dat$Att <- ifelse(dat$Attrition == "Yes", 1,0)
+
+
+dat$EnvironmentSatisfaction <- factor(dat$EnvironmentSatisfaction)
+dat$JobInvolvement<- factor(dat$JobInvolvement)
+dat$JobLevel <- factor(dat$JobLevel)
+dat$JobSatisfaction <- factor(dat$JobSatisfaction)
+dat$PerformanceRating <- factor(dat$PerformanceRating)
+dat$RelationshipSatisfaction <- factor(dat$RelationshipSatisfaction)
+dat$StockOptionLevel <- factor(dat$StockOptionLevel)
+dat$WorkLifeBalance <- factor(dat$WorkLifeBalance)
+dat$NumCompaniesWorked <- factor(dat$NumCompaniesWorked)
+
 
 #Exploration via boxplots (only left in the ones that had significant differences - others are noted in the Notes file)
 boxplot(Age~Attrition, data=dat)#Looks like the mean age of those the did leave companies is lower than those who didn't.
@@ -31,9 +45,10 @@ ggplot(dat, aes(x=YearsSinceLastPromotion))+geom_histogram()
 #looking at correlation between potential confounders (does not look at impact on Attrition)
 
 #first create a subset of just the continuous variables
-cont <- subset(dat, select=c(Age,DailyRate,DistanceFromHome,HourlyRate,MonthlyIncome,MonthlyRate,NumCompaniesWorked,PercentSalaryHike,TotalWorkingYears,TrainingTimesLastYear,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager))
-install.packages("Hmisc")
+cont <- subset(dat, select=c(Att, Age,DailyRate,DistanceFromHome,HourlyRate,MonthlyIncome,MonthlyRate,NumCompaniesWorked,PercentSalaryHike,TotalWorkingYears,TrainingTimesLastYear,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager))
+#install.packages("Hmisc")
 library(Hmisc)
+library(corrplot)
 #Run correlation matrix
 res <- rcorr(as.matrix(cont))
 #Plot the correlations to see which ones are highly important
@@ -50,7 +65,7 @@ AgeTest <- aov(Age~Attrition,data=dat)
 summary(AgeTest)
 
 #Formula to get a correlation between the categorical "Attrition" and a continuous variable 
-install.packages("ICC")
+#install.packages("ICC")
 library(ICC)
 AgeEffect <- ICCbare(Attrition,Age, dat)
 
@@ -67,3 +82,48 @@ catvars <- c("Attrition","BusinessTravel","Department","EducationField","Gender"
 
 #Run the Kramer correlation function
 mat <- catcorrm(vars=catvars,dat)
+
+
+
+#After working through initial correlation analysis, logistic models can be used to determine which factors work well TOGETHER
+#install.packages('aod')
+library(aod) #needed for the wald.test function
+
+#logistic regression, stepwise model selection
+model.null <- glm(Attrition~1,data=dat, family=binomial(link="logit")) #Create the baseline null model
+model.full <- glm(Attrition~.-EmployeeNumber,data=dat, family=binomial(link="logit")) #Create the full model (I don't think this included interactions, haven't figured that out yet)
+step(model.null,scope=list(upper=model.full),direction="both",test="Chisq",data=dat) #step model 
+#This model results in 20 explantory variables (far too many!). The first ones to be added to the model are OverTime, JobRole, StockOptionLevel, JobLevel, EnvironmentSatisfaction and BusinessTravel.
+
+
+#First model after running stepwise. The variables included were the top correlated variables from the correlation exploration above.
+model <- glm(Attrition~JobRole + OverTime +JobLevel+StockOptionLevel+EnvironmentSatisfaction+BusinessTravel+Age,family=binomial(link='logit'),data=dat)
+summary(model) #aic = 1012
+
+#Two ways to test significance of the model: ANOVA and Likelihood Ratio Test
+anova(model,model.null,test="Chisq")
+library(lmtest)
+lrtest(model)
+#Both show overall significance in the model
+
+#The model shows that EnvironmentSatisfaction and OverTime are definitely significant. Further testing is needed for the other variables (because they are dummy variables).
+#Wald tests on the other variables
+wald.test(b=coef(model), Sigma=vcov(model),Terms=2:9) #test on JobRole; small P value, significant
+wald.test(b=coef(model), Sigma=vcov(model),Terms=11:14) #test on JobLevel; small P value, significant
+wald.test(b=coef(model), Sigma=vcov(model),Terms=15:17) #test on StockOptionLevels; small P value, significant
+wald.test(b=coef(model), Sigma=vcov(model),Terms=21:22) #test on BusinessTravel; small P value, significant.
+
+
+#Plot residuals
+plot(fitted(model),rstandard(model))
+
+#Doing Comparisons between different models (looking at BIC)
+model.1<-glm(Attrition~JobRole + OverTime +JobLevel,family=binomial(link='logit'),data=dat)
+model.2 <-glm(Attrition~JobRole + OverTime +StockOptionLevel,family=binomial(link='logit'),data=dat)
+model.3 <- glm(Attrition~JobRole +JobLevel+StockOptionLevel,family=binomial(link='logit'),data=dat)
+model.4 <- glm(Attrition~OverTime +JobLevel+StockOptionLevel,family=binomial(link='logit'),data=dat)
+model.5 <- glm(Attrition~OverTime +JobLevel+EnvironmentSatisfaction,family=binomial(link='logit'),data=dat)
+#install.packages('rcompanion')
+library(rcompanion)
+compareGLM(model.1,model.2,model.3,model.4, model.5)
+#Model 4 returns the lowest metrics (AIC, AICc=1104, BIC)
