@@ -1,4 +1,14 @@
+11/29 Meeting Notes:
+-----
+Lakshmi will work on Job Roles trends exploration
+Laura will work on logistic regression and model fitting/experimenting
+Ryan will work on transforms for stronger correlations and Rmd cleanup
+Ford ?
 
+
+
+Laura Analysis Notes:
+-----
 Variables that should possibly be treated as a factor/class variable (even though the dataset shows as numeric):
 EnvironmentSatisfaction
 JobInvolvement

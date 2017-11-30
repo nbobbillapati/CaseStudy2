@@ -37,7 +37,7 @@ library(Hmisc)
 #Run correlation matrix
 res <- rcorr(as.matrix(cont))
 #Plot the correlations to see which ones are highly important
-corrplot(res$r,type="upper",p.mat=res$P, sig.level=0.1, insig="blank", tl.cex=0.5)
+corrplot(res$r,type="upper",p.mat=res$P, sig.level=0.1, insig="blank", tl.cex=0.5,tl.col="black")
 
 
 
