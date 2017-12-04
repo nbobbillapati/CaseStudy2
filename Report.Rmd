@@ -15,8 +15,11 @@ library(vcd)
 library(ICC)
 library(corrplot)
 library(knitr)
+<<<<<<< HEAD
 library(Hmisc)
 library(corrplot)
+=======
+>>>>>>> 4864fedb46d6a1ed147097d846cb23e86589b46f
 ```
 
 ## Introduction
@@ -46,7 +49,11 @@ This would be a good place for us to examine our transformations
 ```
 
 ## Evaluating Correlations between Variables
+<<<<<<< HEAD
 ### Categorical Variables
+=======
+
+>>>>>>> 4864fedb46d6a1ed147097d846cb23e86589b46f
 ```{r corr_cat}
 
 #Create a function to look at Kramer correlations between categorical variables
@@ -56,6 +63,7 @@ catvars <- c("Attrition","BusinessTravel","Department","EducationField","Gender"
 #Run the Kramer correlation function
 mat <- catcorrm(vars=catvars,dat)
 kable(mat)
+<<<<<<< HEAD
 corrplot(mat, type="upper", tl.cex=0.5, tl.col="black")
 ```
 
@@ -72,6 +80,11 @@ corrplot(res$r,type="upper",p.mat=res$P, sig.level=0.1, insig="blank", tl.cex=0.
 # MonthlyIncome is significantly correlated with the variables related to years (see above comment for list).
 # By adding Att to this, it's possible to see which continous variables are correlated to Attrition
 
+=======
+```
+```{r corr_cont}
+#Add details here around evaluating the continuous variable correlations
+>>>>>>> 4864fedb46d6a1ed147097d846cb23e86589b46f
 ```
 
 Make sure to add some description about which variables have the highest correlations.
