@@ -51,7 +51,6 @@ ggplot(dat, aes(x=YearsAtCompany))+geom_histogram()
 ggplot(dat, aes(x=YearsSinceLastPromotion))+geom_histogram()
 
 
-#looking at correlation between potential confounders (does not look at impact on Attrition)
 #first create a subset of just the continuous variables
 cont <- subset(dat, select=c(Att, Age,DailyRate,DistanceFromHome,HourlyRate,MonthlyIncome,MonthlyRate,NumCompaniesWorked,PercentSalaryHike,TotalWorkingYears,TrainingTimesLastYear,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager))
 library(Hmisc)
@@ -63,12 +62,13 @@ corrplot(res$r,type="upper",p.mat=res$P, sig.level=0.1, insig="blank", tl.cex=0.
 # Variables related to years are all significantly correlated (TotalWorkingYears,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager).
 # Age is significantly correlated with TotalWorkingYears and MonthlyIncome.
 # MonthlyIncome is significantly correlated with the variables related to years (see above comment for list).
+# By adding Att to this, it's possible to see which continous variables are correlated to Attrition
 
+# This might not be needed (since "Att" can be treated as continuous in the above correlation matrix)
 #Diving in to testing the continous variables impact on Attrition
 #Run an ANOVA to test if continuous variable impacts categorical outcome
 AgeTest <- aov(Age~Attrition,data=dat)
 summary(AgeTest)
-
 #Formula to get a correlation between the categorical "Attrition" and a continuous variable 
 #install.packages("ICC")
 library(ICC)
@@ -83,7 +83,7 @@ catcorrm <- function(vars, dat) sapply(vars, function(y) sapply(vars, function(x
 catvars <- c("Attrition","BusinessTravel","Department","EducationField","Gender","JobRole","MaritalStatus","OverTime","EnvironmentSatisfaction","JobInvolvement","JobLevel","JobSatisfaction","PerformanceRating","RelationshipSatisfaction","StockOptionLevel","WorkLifeBalance","NumCompaniesWorked")
 #Run the Kramer correlation function
 mat <- catcorrm(vars=catvars,dat)
-
+corrplot(mat, type="upper", tl.cex=0.5, tl.col="black")
 
 #----------Logistic Regression Analysis (may not include) ----------
 #After working through initial correlation analysis, logistic models can be used to determine which factors work well TOGETHER
