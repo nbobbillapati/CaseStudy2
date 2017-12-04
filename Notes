@@ -1,9 +1,9 @@
-11/29 Meeting Notes:
+12/3 Meeting Notes:
 -----
 Lakshmi will work on Job Roles trends exploration
-Laura will work on logistic regression and model fitting/experimenting
-Ryan will work on transforms for stronger correlations and Rmd cleanup
-Ford ?
+Laura will work on putting correlations into a matrix for easy output and will look into making slides in RStudio.
+Ford will work on transforms for stronger correlations and Rmd cleanup
+
 
 
 

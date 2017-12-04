@@ -34,15 +34,7 @@ From this summary, there are 35 variables, and 1470 observations. The variable o
 dat <- subset(dat, select = -c(Over18,EmployeeCount,StandardHours)) #Remove the columns that do not give any useful information.
 dat$Att <- ifelse(dat$Attrition == "Yes", 1,0) #Create a numeric representation of Attrition (1=Yes, 0=No)
 
-# Create variable for age group
-#attach(dat)
-#dat$AgeGroup[Age <= 24] <- "18-24"
-#dat$AgeGroup[Age > 24 & Age <=34] <- "25-34"
-#dat$AgeGroup[Age > 34 & Age <=44] <- "35-44"
-#dat$AgeGroup[Age > 44 & Age <=54] <- "45-54"
-#dat$AgeGroup[Age > 54 & Age <=64] <- "55-64"
-#dat$AgeGroup[Age >= 65] <- "65+"
-#detach(dat)
+
 ```
 
 To start exploring the data, look at boxplots/histograms based on Attrition. 
