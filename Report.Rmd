@@ -15,21 +15,19 @@ library(vcd)
 library(ICC)
 library(corrplot)
 library(knitr)
-<<<<<<< HEAD
 library(Hmisc)
 library(corrplot)
-=======
->>>>>>> 4864fedb46d6a1ed147097d846cb23e86589b46f
+
 ```
 
 ## Introduction
 
-This is where we will write an introduction to the problem and analysis we are completing.
+This analysis explores a data set regarding attrition (an employee voluntarily leaving a company). The goal is to identify what characteristics of an employee are good indicators that an employee is at risk of leaving. 
 
 ## Data Exploration
 
 ```{r gather}
-dat <- read.xlsx("CaseStudy2-data.xlsx", sheetName="HR-employee-attrition Data")
+dat <- read.csv("CaseStudy2-data.csv")
 head(dat)
 summary(dat)
 ```
@@ -49,11 +47,11 @@ This would be a good place for us to examine our transformations
 ```
 
 ## Evaluating Correlations between Variables
-<<<<<<< HEAD
-### Categorical Variables
-=======
 
->>>>>>> 4864fedb46d6a1ed147097d846cb23e86589b46f
+### Categorical Variables
+
+
+
 ```{r corr_cat}
 
 #Create a function to look at Kramer correlations between categorical variables
@@ -63,7 +61,7 @@ catvars <- c("Attrition","BusinessTravel","Department","EducationField","Gender"
 #Run the Kramer correlation function
 mat <- catcorrm(vars=catvars,dat)
 kable(mat)
-<<<<<<< HEAD
+
 corrplot(mat, type="upper", tl.cex=0.5, tl.col="black")
 ```
 
@@ -80,21 +78,31 @@ corrplot(res$r,type="upper",p.mat=res$P, sig.level=0.1, insig="blank", tl.cex=0.
 # MonthlyIncome is significantly correlated with the variables related to years (see above comment for list).
 # By adding Att to this, it's possible to see which continous variables are correlated to Attrition
 
-=======
+
 ```
 ```{r corr_cont}
 #Add details here around evaluating the continuous variable correlations
->>>>>>> 4864fedb46d6a1ed147097d846cb23e86589b46f
+
 ```
 
 Make sure to add some description about which variables have the highest correlations.
 
 ## Trends by Job Role
 Details about the process and outcomes of Lakshmi's analysis on Job Roles.
-```{r jobroles}
+```{r jobrolesbyattrition}
+
+```
+[How to read this plot type]
+Interesting observation 1
+
+
+```{r jobrolesbygender}
 
 ```
 
+```{r jobrolesbyx}
+
+```
 ## Conclusion
 Here we will need to tie together the results from our analysis.
 

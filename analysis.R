@@ -1,5 +1,5 @@
 #Reading in data and review high level summary
-dat <- read.xlsx("CaseStudy2-data.xlsx", sheetName="HR-employee-attrition Data",na.strings=c(""))
+dat <- read.csv("CaseStudy2-data.csv",na.strings=c(""))
 head(dat)
 summary(dat)
 sapply(dat,function(x) sum(is.na(x))) #check if there are any missing values
@@ -17,7 +17,7 @@ dat <- subset(dat, select = -c(Over18,EmployeeCount,StandardHours,na.strings))
 #dat$AgeGroup[Age >= 65] <- "65+"
 #detach(dat)
 dat$Att <- ifelse(dat$Attrition == "Yes", 1,0)
-
+dat$Gender <- ifelse(dat$Gender == "Male", 1,0)
 
 dat$EnvironmentSatisfaction <- factor(dat$EnvironmentSatisfaction)
 dat$JobInvolvement<- factor(dat$JobInvolvement)
