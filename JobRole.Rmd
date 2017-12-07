@@ -6,7 +6,11 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+getwd()
+setwd("C:\\MySMU\\DataScience\\CaseStudy2\\")
+
 ```
 
 ## R Markdown
@@ -16,20 +20,38 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
-getwd()
-setwd("C:\\MySMU\\DataScience\\CaseStudy2\\")
 jrole <- read.csv("CaseStudy2-data.csv")
-head(jrole)
-summary(jrole)
-sapply(jrole,function(x) sum(is.na(x))) #check if there are any missing values
+#head(jrole)
+#summary(jrole)
 
-jrole <- subset(jrole, select = -c(Over18,EmployeeCount,StandardHours,na.strings)) 
 jrole$Att <- ifelse(jrole$Attrition == "Yes", 1,0)
-jrole$Gender <- ifelse(jrole$Gender == "Male", 1,0)
+jrole$JobRole <- trimws(jrole$JobRole)
+```
+
+## Job Role VS Attrition plot
+```{r jobroleatt}
 cAtt <- with(jrole, table(JobRole,Attrition))
+cAttds <- as.data.frame(cAtt)
+attplot <- ggplot(cAttds, aes(x=cAttds$JobRole, y=cAttds$Freq, fill= cAttds$Attrition)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("Yes"="red", "No"="blue")) + labs(title="Job Role Vs Attrition", y="Count", x="Job Role")
+attplot
+```
+
+## Job Role VS Gender plot
+```{r jobrolegender}
 cgender <- with(jrole, table(JobRole,Gender))
-plot(cAtt, las=2)
-plot(cgender, las=2)
+cgenderds <- as.data.frame(cgender)
+genderplot <- ggplot(cgenderds, aes(x=cgenderds$JobRole, y=cgenderds$Freq, fill= cgenderds$Gender)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("Female"="red", "Male"="blue")) + labs(title="Job Role Vs Gender", y="Count", x="Job Role")
+genderplot
+```
+
+## Job Role VS Job Satisfaction
+```{r jobrolesatisfaction}
+
+cjobst <- with(jrole, table(JobRole,JobSatisfaction))
+cjobstds <- as.data.frame(cjobst)
+jobstplot <- ggplot(cjobstds, aes(x=cjobstds$JobRole, y=cjobstds$Freq, fill= cjobstds$JobSatisfaction)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("1"="red", "2"="yellow", "3"="blue", "4"="green")) + labs(title="Job Role Vs Job Satisfaction", y="Count", x="Job Role")
+jobstplot
+```
 
 ## Including Plots
 
