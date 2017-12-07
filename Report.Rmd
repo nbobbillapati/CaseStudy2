@@ -93,21 +93,34 @@ corrplot(res$r,type="upper",p.mat=res$P, sig.level=0.1, insig="blank", tl.cex=0.
 * MonthlyIncome is significantly correlated with the variables related to years (see above comment for list).
 
 ## Trends by Job Role
-Details about the process and outcomes of Lakshmi's analysis on Job Roles.
-```{r jobrolesbyattrition}
-
+```{r jobroleatt}
+cAtt <- with(dat, table(JobRole,Attrition))
+cAttds <- as.data.frame(cAtt)
+attplot <- ggplot(cAttds, aes(x=cAttds$JobRole, y=cAttds$Freq, fill= cAttds$Attrition)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("Yes"="red", "No"="blue")) + labs(title="Job Role Vs Attrition", y="Count", x="Job Role")
+attplot
 ```
-[How to read this plot type]
+
 Interesting observation 1
 
-
-```{r jobrolesbygender}
-
+```{r jobrolegender}
+cgender <- with(dat, table(JobRole,Gender))
+cgenderds <- as.data.frame(cgender)
+genderplot <- ggplot(cgenderds, aes(x=cgenderds$JobRole, y=cgenderds$Freq, fill= cgenderds$Gender)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("Female"="red", "Male"="blue")) + labs(title="Job Role Vs Gender", y="Count", x="Job Role")
+genderplot
 ```
 
-```{r jobrolesbyx}
+Interesting obs 2
 
+```{r jobrolesatisfaction}
+
+cjobst <- with(dat, table(JobRole,JobSatisfaction))
+cjobstds <- as.data.frame(cjobst)
+jobstplot <- ggplot(cjobstds, aes(x=cjobstds$JobRole, y=cjobstds$Freq, fill= cjobstds$JobSatisfaction)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("1"="red", "2"="yellow", "3"="blue", "4"="green")) + labs(title="Job Role Vs Job Satisfaction", y="Count", x="Job Role")
+jobstplot
 ```
+
+Interesting obs 3
+
 ## Conclusion
 By taking the greatest avsolute value of the correlations from both analyses, OverTime, JobRole, and StockOptionLevel are the three most significant indicators of attrition by an employee.
 
