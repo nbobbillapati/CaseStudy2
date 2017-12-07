@@ -31,24 +31,55 @@ dat$NumCompaniesWorked <- factor(dat$NumCompaniesWorked)
 
 
 #Exploration via boxplots (only left in the ones that had significant differences - others are noted in the Notes file)
-boxplot(Age~Attrition, data=dat)#Looks like the mean age of those the did leave companies is lower than those who didn't.
-boxplot(DailyRate~Attrition, data=dat) #The spread of these is about the same, but the average and interquartile spread are lower for thos who left (meaning lower daily rates may indicate higher attrition)
-boxplot(DistanceFromHome~Attrition, data=dat)#The spread of these is about the same, but the average and interquartile spread are higher for those who left (meaning longer commutes may indicate higher attrition)
-boxplot(NumCompaniesWorked~Attrition, data=dat) #Looks like maybe people are more likely to leave if they've only worked at a small number of companies
-boxplot(TotalWorkingYears~Attrition, data=dat) #People seem more likely to leave if they have been working for fewer years
-boxplot(TrainingTimesLastYear~Attrition, data=dat) #Looks like attrition might be more likely when there's less training time in the previous year
-boxplot(YearsAtCompany~Attrition, data=dat) #Really skewed, looks like fewer years at the company might be an indicator for attrition
-boxplot(YearsInCurrentRole~Attrition,data=dat) #Fewer years in role, more likely to leave 
-boxplot(YearsWithCurrManager~Attrition,data=dat) #Fewer years with current manager, more likely to leave
+#Looks like the mean age of those the did leave companies is lower than those who didn't.
+ggplot(dat, aes(x=Attrition, y=Age))+geom_boxplot()+scale_x_discrete(name = "Attrition") +
+  scale_y_continuous(name = "Age") + ggtitle("Attrition by Age")+theme_bw()
+
+#The spread of these is about the same, but the average and interquartile spread are higher for those who left (meaning longer commutes may indicate higher attrition)
+ggplot(dat, aes(x=Attrition, y=DistanceFromHome))+geom_boxplot()+scale_x_discrete(name = "Attrition") +
+  scale_y_continuous(name = "Distance From Home") + ggtitle("Attrition by Commute Distance")+theme_bw()
+
+#People seem more likely to leave if they have been working for fewer years
+ggplot(dat, aes(x=Attrition, y=TotalWorkingYears))+geom_boxplot()+scale_x_discrete(name = "Attrition") +
+  scale_y_continuous(name = "Total Years Working") + ggtitle("Attrition by Work Experience (Years)")+theme_bw()
+
+#Looks like attrition might be more likely when there's less training time in the previous year
+ggplot(dat, aes(x=Attrition, y=TrainingTimesLastYear))+geom_boxplot()+scale_x_discrete(name = "Attrition") +
+  scale_y_continuous(name = "Training Times Last Year") + ggtitle("Attrition by Training (Instances in Previous Year)")+theme_bw()+geom_jitter()
+
+#Really skewed, looks like fewer years at the company might be an indicator for attrition
+ggplot(dat, aes(x=Attrition, y=YearsAtCompany))+geom_boxplot()+scale_x_discrete(name = "Attrition") +
+  scale_y_continuous(name = "Years At Company") + ggtitle("Attrition by Years At Company")+theme_bw()
+
+#Fewer years in role, more likely to leave 
+ggplot(dat, aes(x=Attrition, y=YearsInCurrentRole))+geom_boxplot()+scale_x_discrete(name = "Attrition") +
+  scale_y_continuous(name = "Years In Current Role") + ggtitle("Attrition by Years In Current Role")+theme_bw()
+
+#Fewer years with current manager, more likely to leave
+ggplot(dat, aes(x=Attrition, y=YearsWithCurrManager))+geom_boxplot()+scale_x_discrete(name = "Attrition") +
+  scale_y_continuous(name = "Years With Current Manager") + ggtitle("Attrition by Years With Current Manager")+theme_bw()
+
 
 #Histograms showing possible needs for transformation:
 library(ggplot2)
-ggplot(dat, aes(x=DistanceFromHome))+geom_histogram() 
-ggplot(dat, aes(x=MonthlyIncome))+geom_histogram()
-ggplot(dat, aes(x=NumCompaniesWorked))+geom_histogram()
-ggplot(dat, aes(x=TotalWorkingYears))+geom_histogram()
-ggplot(dat, aes(x=YearsAtCompany))+geom_histogram()
-ggplot(dat, aes(x=YearsSinceLastPromotion))+geom_histogram()
+ggplot(dat, aes(x=DistanceFromHome))+geom_histogram()+
+  scale_x_continuous(name="Commute Mileage")+
+  ggtitle("Distribution of Commute Mileage")
+ggplot(dat, aes(x=MonthlyIncome))+geom_histogram()+
+  scale_x_continuous(name="Monthly Income")+
+  ggtitle("Distribution of Monthly Income")
+ggplot(dat, aes(x=NumCompaniesWorked))+geom_histogram()+
+  scale_x_continuous(name="Number of Companies Worked For")+
+  ggtitle("Distribution of Number of Employers")
+ggplot(dat, aes(x=TotalWorkingYears))+geom_histogram()+
+  scale_x_continuous(name="Total Working Years") +
+  ggtitle("Distribution of Working Years")
+ggplot(dat, aes(x=YearsAtCompany))+geom_histogram()+
+  scale_x_continuous(name="Years at Company")+ 
+  ggtitle("Distribution of Employment Tenure")
+ggplot(dat, aes(x=YearsSinceLastPromotion))+geom_histogram()+ 
+  scale_x_continuous(name="Years Since Last Promotion")+
+  ggtitle("Distribution of Years since Last Promotion")
 
 
 #first create a subset of just the continuous variables

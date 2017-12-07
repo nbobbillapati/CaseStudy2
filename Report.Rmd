@@ -6,7 +6,8 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+options(knitr.kable.NA = '')
 library(ggplot2)
 library(xlsx)
 library(mlbench)
@@ -26,15 +27,19 @@ This analysis explores a data set regarding attrition (an employee voluntarily l
 
 ## Data Exploration
 
-```{r gather}
+```{r gather, echo=FALSE}
 dat <- read.csv("CaseStudy2-data.csv")
-head(dat)
-summary(dat)
+#head(dat)
+#summary(dat)
 ```
 
 From this summary, there are 35 variables, and 1470 observations. The variable of interest is "Attrition", which is a binary "Yes/No" outcome. A number of the variables are redundant or non-informative: "Over18", "StandardHours" and "EmployeeCount" have only one value each; "EmployeeNumber" is an ID. 
+```{r summaries, echo=FALSE}
+summ <- summary(subset(dat,select=c(Over18, StandardHours,EmployeeCount)))
+kable(summ)
+```
 
-```{r clean}
+```{r clean, echo=FALSE}
 dat <- subset(dat, select = -c(Over18,EmployeeCount,StandardHours)) #Remove the columns that do not give any useful information.
 dat$Att <- ifelse(dat$Attrition == "Yes", 1,0) #Create a numeric representation of Attrition (1=Yes, 0=No)
 
@@ -49,9 +54,6 @@ This would be a good place for us to examine our transformations
 ## Evaluating Correlations between Variables
 
 ### Categorical Variables
-
-
-
 ```{r corr_cat}
 
 #Create a function to look at Kramer correlations between categorical variables
@@ -65,6 +67,14 @@ kable(mat)
 corrplot(mat, type="upper", tl.cex=0.5, tl.col="black")
 ```
 
+####General Observations:
+* Department and JobRole are highly correlated, which makes sense, given that job roles tend to be assigned by department.
+* JobRole and JobLevel are correlated, which is not unexpected either, given that job roles change as one attains different job levels.
+
+####Attrition Observations:
+* OverTime is the variable that is most correlated to Attrition. Because it is a positive correlation, we expect more attrition when employees work more overtime.
+* JobRole is the second-most correlated variable with Attrition. Further examination of JobRoles on Attrition will be presented later.
+
 ### Continuous Variables
 ```{r corr_cont}
 cont <- subset(dat, select=c(Att, Age,DailyRate,DistanceFromHome,HourlyRate,MonthlyIncome,MonthlyRate,NumCompaniesWorked,PercentSalaryHike,TotalWorkingYears,TrainingTimesLastYear,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager))
@@ -73,19 +83,14 @@ res <- rcorr(as.matrix(cont))
 #Plot the correlations to see which ones are highly important
 kable(res$r)
 corrplot(res$r,type="upper",p.mat=res$P, sig.level=0.1, insig="blank", tl.cex=0.5,tl.col="black")
-# Variables related to years are all significantly correlated (TotalWorkingYears,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager).
-# Age is significantly correlated with TotalWorkingYears and MonthlyIncome.
-# MonthlyIncome is significantly correlated with the variables related to years (see above comment for list).
+
 # By adding Att to this, it's possible to see which continous variables are correlated to Attrition
-
-
-```
-```{r corr_cont}
-#Add details here around evaluating the continuous variable correlations
-
 ```
 
-Make sure to add some description about which variables have the highest correlations.
+####Observations:
+* Variables related to years are all significantly correlated (TotalWorkingYears,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager).
+* Age is significantly correlated with TotalWorkingYears and MonthlyIncome.
+* MonthlyIncome is significantly correlated with the variables related to years (see above comment for list).
 
 ## Trends by Job Role
 Details about the process and outcomes of Lakshmi's analysis on Job Roles.
@@ -104,6 +109,6 @@ Interesting observation 1
 
 ```
 ## Conclusion
-Here we will need to tie together the results from our analysis.
+By taking the greatest avsolute value of the correlations from both analyses, OverTime, JobRole, and StockOptionLevel are the three most significant indicators of attrition by an employee.
 
 
