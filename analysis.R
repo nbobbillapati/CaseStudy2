@@ -1,3 +1,15 @@
+library(ggplot2)
+library(xlsx)
+library(mlbench)
+library(caret)
+library(vcd)
+library(ICC)
+library(corrplot)
+library(knitr)
+library(Hmisc)
+library(corrplot)
+library(kableExtra)
+
 #Reading in data and review high level summary
 dat <- read.csv("CaseStudy2-data.csv",na.strings=c(""))
 head(dat)
@@ -63,7 +75,7 @@ ggplot(dat, aes(x=Attrition, y=YearsWithCurrManager))+geom_boxplot()+scale_x_dis
 #Histograms showing possible needs for transformation:
 library(ggplot2)
 ggplot(dat, aes(x=DistanceFromHome))+geom_histogram()+
-  scale_x_continuous(name="Commute Mileage")+
+  scale_x_continuous(name="Commute Mileage", fill="navyblue")+
   ggtitle("Distribution of Commute Mileage")
 ggplot(dat, aes(x=MonthlyIncome))+geom_histogram()+
   scale_x_continuous(name="Monthly Income")+

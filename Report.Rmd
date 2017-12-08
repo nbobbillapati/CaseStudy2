@@ -18,6 +18,7 @@ library(corrplot)
 library(knitr)
 library(Hmisc)
 library(corrplot)
+library(kableExtra)
 
 ```
 
@@ -48,9 +49,16 @@ dat$Att <- ifelse(dat$Attrition == "Yes", 1,0) #Create a numeric representation 
 To start exploring the data, look at boxplots/histograms based on Attrition. 
 This would be a good place for us to examine our transformations
 ```{r boxplots}
-# Maybe include some relevant box plots
+ggplot(dat, aes(x=Attrition, y=Age))+geom_boxplot()+scale_x_discrete(name = "Attrition") +
+  scale_y_continuous(name = "Age") + ggtitle("Attrition by Age")+theme_bw()
+
+ggplot(dat, aes(x=Attrition, y=DistanceFromHome))+geom_boxplot()+scale_x_discrete(name = "Attrition") +
+  scale_y_continuous(name = "Distance From Home") + ggtitle("Attrition by Commute Distance")+theme_bw()
 ```
 
+```{r histograms}
+
+```
 ## Evaluating Correlations between Variables
 
 ### Categorical Variables
@@ -62,7 +70,7 @@ catcorrm <- function(vars, dat) sapply(vars, function(y) sapply(vars, function(x
 catvars <- c("Attrition","BusinessTravel","Department","EducationField","Gender","JobRole","MaritalStatus","OverTime","EnvironmentSatisfaction","JobInvolvement","JobLevel","JobSatisfaction","PerformanceRating","RelationshipSatisfaction","StockOptionLevel","WorkLifeBalance","NumCompaniesWorked")
 #Run the Kramer correlation function
 mat <- catcorrm(vars=catvars,dat)
-kable(mat)
+kable_styling(kable(mat,"html"),bootstrap_options="condensed",full_width = F)
 
 corrplot(mat, type="upper", tl.cex=0.5, tl.col="black")
 ```
@@ -96,7 +104,7 @@ corrplot(res$r,type="upper",p.mat=res$P, sig.level=0.1, insig="blank", tl.cex=0.
 ```{r jobroleatt}
 cAtt <- with(dat, table(JobRole,Attrition))
 cAttds <- as.data.frame(cAtt)
-attplot <- ggplot(cAttds, aes(x=cAttds$JobRole, y=cAttds$Freq, fill= cAttds$Attrition)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("Yes"="red", "No"="blue")) + labs(title="Job Role Vs Attrition", y="Count", x="Job Role")
+attplot <- ggplot(cAttds, aes(x=cAttds$JobRole, y=cAttds$Freq, fill= cAttds$Attrition)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("Yes"="#B82531", "No"="navyblue")) + labs(title="Job Role Vs Attrition", y="Count", x="Job Role")
 attplot
 ```
 
@@ -105,7 +113,7 @@ Interesting observation 1
 ```{r jobrolegender}
 cgender <- with(dat, table(JobRole,Gender))
 cgenderds <- as.data.frame(cgender)
-genderplot <- ggplot(cgenderds, aes(x=cgenderds$JobRole, y=cgenderds$Freq, fill= cgenderds$Gender)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("Female"="red", "Male"="blue")) + labs(title="Job Role Vs Gender", y="Count", x="Job Role")
+genderplot <- ggplot(cgenderds, aes(x=cgenderds$JobRole, y=cgenderds$Freq, fill= cgenderds$Gender)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("Female"="#B82531", "Male"="navyblue")) + labs(title="Job Role Vs Gender", y="Count", x="Job Role")
 genderplot
 ```
 
@@ -115,7 +123,7 @@ Interesting obs 2
 
 cjobst <- with(dat, table(JobRole,JobSatisfaction))
 cjobstds <- as.data.frame(cjobst)
-jobstplot <- ggplot(cjobstds, aes(x=cjobstds$JobRole, y=cjobstds$Freq, fill= cjobstds$JobSatisfaction)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("1"="red", "2"="yellow", "3"="blue", "4"="green")) + labs(title="Job Role Vs Job Satisfaction", y="Count", x="Job Role")
+jobstplot <- ggplot(cjobstds, aes(x=cjobstds$JobRole, y=cjobstds$Freq, fill= cjobstds$JobSatisfaction)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("1"="#B82531", "2"="gold", "3"="navyblue", "4"="darkgreen"),labels=c("Low","Medium","High","Very High")) + labs(title="Job Role Vs Job Satisfaction", y="Count", x="Job Role") 
 jobstplot
 ```
 
