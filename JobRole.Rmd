@@ -44,6 +44,33 @@ genderplot <- ggplot(cgenderds, aes(x=cgenderds$JobRole, y=cgenderds$Freq, fill=
 genderplot
 ```
 
+```{r jobworklife}
+cwk <- with(jrole, table(JobRole,WorkLifeBalance))
+cwkds <- as.data.frame(cwk)
+wkplot <- ggplot(cwkds, aes(x=cwkds$JobRole, y=cwkds$Freq, fill= cwkds$WorkLifeBalance)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("1"="red", "2"="yellow", "3"="blue", "4"="green")) + labs(title="Job Role Vs Work Life Balance", y="Count", x="Job Role")
+wkplot
+```
+
+
+```{r jobmaritalstatus}
+cma <- with(jrole, table(JobRole, MaritalStatus))
+cmads <- as.data.frame(cma)
+maplot <- ggplot(cmads, aes(x=cmads$JobRole, y=cmads$Freq, fill= cmads$MaritalStatus)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual("Legend", values = c("Single"="red", "Married"="yellow", "Divorced"="blue")) + labs(title="Job Role Vs Marital Status", y="Count", x="Job Role")
+
+maplot
+```
+
+```{r jobmonthlyincome}
+cmi <- with(jrole, table(JobRole, MonthlyIncome))
+cmids <- as.data.frame(cmi)
+miplot <- ggplot(cmids, aes(x=cmids$JobRole, y=cmids$Freq, fill= cmids$MonthlyIncome)) +geom_bar(stat ="identity") + theme(axis.text.x = element_text(angle = 90))
+
++ scale_fill_manual("Legend", values = c("Single"="red", "Married"="yellow", "Divorced"="blue")) + labs(title="Job Role Vs Marital Status", y="Count", x="Job Role")
+
+maplot
+```
+
+
 ## Job Role VS Job Satisfaction
 ```{r jobrolesatisfaction}
 
